@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 样式部分保持不变 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的第一个页面</title>
+    <!-- 新增音频元素 -->
+    <audio id="backgroundMusic" src="市集.mp3" autoplay loop></audio>
+    <style>
+        body {
+            background-color: lightgreen;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #avatarButton {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+        }
+        #settingsButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+        }
+        #beanButton {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 50px;
+        }
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            margin-top: 150px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .main-container > div {
+            max-width: 400px; 
+            max-height: 450px; 
+            width: 30%;
+            height: auto;
+            aspect-ratio: 400 / 450;
+            background-color: white;
+        }
+        .main-container > div:nth-child(1),
+        .main-container > div:nth-child(2) {
+            background-color: lightblue;
+        }
+        .main-container > div:nth-child(1) {
+            font-family: 宋体;
+            font-size: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .main-container > div:nth-child(2) {
+            font-family: 宋体;
+            font-size: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .button-container {
+            display: none;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .button-container button {
+            width: 40%; 
+            padding: calc(10px * 3 / 5); 
+            margin: 0;
+        }
+        .third-container > div {
+            width: 100%;
+            max-width: 400px; 
+        }
+        .third-container > div:nth-child(1),
+        .third-container > div:nth-child(3) {
+            height: 200px;
+            background-color: lightblue; 
+            font-family: 宋体;
+            font-size: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; 
+        }
+        .third-container > div:nth-child(2) {
+            height: 50px;
+            background-color: lightgreen;
+        }
+        .third-div-buttons {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            padding: 10px; 
+            box-sizing: border-box;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            justify-content: space-evenly;
+        }
+        .third-div-buttons button {
+            flex: 0.25; 
+            margin: 0;
+            height: calc(20px * 4); 
+        }
+    </style>
+</head>
+<body>
+    <button id="avatarButton" onclick="goToHandPage()">头像</button>
+    <button id="settingsButton" onclick="goToSettingPage()">设置</button>
+    <!-- 修改文本框样式，使其背景透明、无边框，禁止手动修改、禁止选中，点击时不显示边框 -->
+    <input type="text" id="numberOutput" value="1000" style="width: 50px; height: 25px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); background-color: transparent; border: none; user-select: none; outline: none;" readonly unselectable="on">
+    <!-- 修改按钮样式、位置和文本，使其紧挨着文本框 -->
+    <button id="beanButton" onclick="goToBeanPage()" style="width: 25px; height: 25px; display: flex; justify-content: center; align-items: center; position: absolute; top: 0; left: calc(50% + 45px);">＋</button>
+    <div class="main-container">
+        <div id="firstDiv" onclick="toggleButtons('firstDiv')">联机对战
+            <div class="button-container" id="firstDivButtonContainer">
+                <!-- 修改按钮点击事件 -->
+                <button onclick="goToPv1pPage()">双人</button>
+                <button onclick="goToPv2pPage()">三人</button>
+                <button onclick="goToPv3pPage()">四人</button>
+                <button onclick="goToPv4pPage()">五人（高手）</button>
+                <button onclick="goToPv5pPage()">六人（高手）</button>
+            </div>
+        </div>
+        <div id="secondDiv" onclick="toggleButtons('secondDiv')">好友对战
+            <div class="button-container" id="secondDivButtonContainer">
+                <button onclick="goToK2Page()">双人</button>
+                <button onclick="goToK3Page()">三人</button>
+                <button onclick="goToK4Page()">四人</button>
+                <button onclick="goToK5Page()">五人</button>
+                <button onclick="goToK6Page()">六人</button>
+            </div>
+        </div>
+        <div class="third-container">
+            <div onclick="goToAnotherPage()">商城</div>
+            <div></div>
+            <div id="thirdDiv" onclick="toggleThirdDivButtons()">人机
+                <div class="third-div-buttons" id="thirdDivButtons">
+                    <button onclick="goToPv1ePage()">双人</button>
+                    <button onclick="goToPv2ePage()">三人</button>
+                    <button onclick="goToPv3ePage()">四人</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" src="市集.mp3" autoplay loop></audio>
+    <!-- <a href="shop_page.html">前往商城页面</a> -->
+	<!-- 删除了以下两行 -->
+	<!-- <h1>欢迎来到我的页面</h1> -->
+	<!-- <p>这是一个使用 HTML 创建的简单页面。</p> -->
+    <script>
+        function toggleButtons(divId) {
+            const buttonContainerId = divId + 'ButtonContainer';
+            const buttonContainer = document.getElementById(buttonContainerId);
+            if (buttonContainer.style.display === 'none' || buttonContainer.style.display === '') {
+                buttonContainer.style.display = 'flex';
+            } else {
+                buttonContainer.style.display = 'none';
+            }
+        }
+
+        function toggleThirdDivButtons() {
+            const thirdDivButtons = document.getElementById('thirdDivButtons');
+            if (thirdDivButtons.style.display === 'none' || thirdDivButtons.style.display === '') {
+                thirdDivButtons.style.display = 'flex';
+            } else {
+                thirdDivButtons.style.display = 'none';
+            }
+        }
+		
+		// 新增点击商城按钮跳转函数
+        function goToAnotherPage() {
+            window.location.href = 'shop_page.html';
+        }
+		
+		// 新增点击头像按钮跳转函数
+        function goToHandPage() {
+            window.location.href = 'head_page.html';
+        }
+		
+		// 新增点击豆按钮跳转函数
+        function goToBeanPage() {
+            window.location.href = 'bean_page.html';
+        }
+        //离开页面5面再返回，则添加豆的数量，需要用到数据库
+        //let leaveTime;
+
+        /*function handlePlusButtonClick() {
+            leaveTime = new Date().getTime();
+            goToBeanPage();
+        }
+
+        window.addEventListener('pageshow', function () {
+            if (leaveTime) {
+                const currentTime = new Date().getTime();
+                const elapsedTime = (currentTime - leaveTime) / 1000;
+                if (elapsedTime >= 5) {
+                    const numberOutput = document.getElementById('numberOutput');
+                    const currentValue = parseInt(numberOutput.value);
+                    numberOutput.value = currentValue + 100;
+            }
+                leaveTime = null;
+            }
+        });*/
+
+		// 新增点击设置按钮跳转函数
+        function goToSettingPage() {
+            window.location.href = 'setting_page.html';
+        }
+
+		// 新增点击第三个 div 双人按钮跳转函数
+        function goToPv1ePage() {
+            window.location.href = 'pv1e_page.html';
+        }
+		// 新增点击第三个 div 三人按钮跳转函数
+        function goToPv2ePage() {
+            window.location.href = 'pv2e_page.html';
+        }
+		// 新增点击第三个 div 四人按钮跳转函数
+        function goToPv3ePage() {
+            window.location.href = 'pv3e_page.html';
+        }
+
+        // 新增点击第一个 div 双人按钮跳转函数
+        function goToPv1pPage() {
+            window.location.href = 'pv1p_page.html';
+        }
+        // 新增点击第一个 div 三人按钮跳转函数
+        function goToPv2pPage() {
+            window.location.href = 'pv2p_page.html';
+        }
+        // 新增点击第一个 div 四人按钮跳转函数
+        function goToPv3pPage() {
+            window.location.href = 'pv3p_page.html';
+        }
+        // 新增点击第一个 div 五人（高手）按钮跳转函数
+        function goToPv4pPage() {
+            window.location.href = 'pv4p_page.html';
+        }
+        // 新增点击第一个 div 六人（高手）按钮跳转函数
+        function goToPv5pPage() {
+            window.location.href = 'pv5p_page.html';
+        }
+
+		// 新增点击第二个 div 双人按钮跳转函数
+        function goToK2Page() {
+            window.location.href = 'k2_page.html';
+        }
+        // 新增点击第二个 div 三人按钮跳转函数
+        function goToK3Page() {
+            window.location.href = 'k3_page.html';
+        }
+        // 新增点击第二个 div 四人按钮跳转函数
+        function goToK4Page() {
+            window.location.href = 'k4_page.html';
+        }
+        // 新增点击第二个 div 五人按钮跳转函数
+        function goToK5Page() {
+            window.location.href = 'k5_page.html';
+        }
+        // 新增点击第二个 div 六人按钮跳转函数
+        function goToK6Page() {
+            window.location.href = 'k6_page.html';
+        }
+		
+        document.addEventListener('click', function(event) {
+            // 处理第一个 div 的按钮容器
+            const firstDivButtonContainer = document.getElementById('firstDivButtonContainer');
+            const isFirstButtonContainerVisible = firstDivButtonContainer.style.display === 'flex';
+            const isClickInsideFirstButtonContainer = firstDivButtonContainer.contains(event.target);
+            const isClickOnFirstDiv = event.target.id === 'firstDiv';
+
+            if (isFirstButtonContainerVisible &&!isClickInsideFirstButtonContainer &&!isClickOnFirstDiv) {
+                firstDivButtonContainer.style.display = 'none';
+            }
+
+            // 处理第二个 div 的按钮容器
+            const secondDivButtonContainer = document.getElementById('secondDivButtonContainer');
+            const isSecondButtonContainerVisible = secondDivButtonContainer.style.display === 'flex';
+            const isClickInsideSecondButtonContainer = secondDivButtonContainer.contains(event.target);
+            const isClickOnSecondDiv = event.target.id === 'secondDiv';
+
+            if (isSecondButtonContainerVisible &&!isClickInsideSecondButtonContainer &&!isClickOnSecondDiv) {
+                secondDivButtonContainer.style.display = 'none';
+            }
+
+            // 处理第三个 div 的按钮容器
+            const thirdDivButtons = document.getElementById('thirdDivButtons');
+            const isThirdDivButtonsVisible = thirdDivButtons.style.display === 'flex';
+            const isClickInsideThirdDivButtons = thirdDivButtons.contains(event.target);
+            const isClickOnThirdDiv = event.target.id === 'thirdDiv';
+
+            if (isThirdDivButtonsVisible &&!isClickInsideThirdDivButtons &&!isClickOnThirdDiv) {
+                thirdDivButtons.style.display = 'none';
+            }
+        });
+
+        // 背景音乐
+        const audio = document.getElementById('backgroundMusic');
+
+        // 页面加载时恢复音频状态
+        const savedTime = localStorage.getItem('audioPlayTime');
+        if (savedTime) {
+            audio.currentTime = parseFloat(savedTime);
+        }
+
+        const savedVolume = localStorage.getItem('musicVolume');
+        if (savedVolume) {
+            audio.volume = parseFloat(savedVolume);
+        }
+
+        // 恢复静音状态
+        const savedMute = localStorage.getItem('isMuted');
+        if (savedMute) {
+            audio.muted = savedMute === 'true';
+        }
+
+        // 等待用户点击页面后播放音频
+        document.addEventListener('click', function playAudioOnce() {
+            audio.play().catch(() => {
+                console.log('音频播放被阻止，请检查浏览器设置或再次交互');
+            });
+            // 移除事件监听器，避免多次触发
+            document.removeEventListener('click', playAudioOnce);
+        });
+
+        // 页面卸载时保存音频状态
+        window.addEventListener('beforeunload', function () {
+            localStorage.setItem('audioPlayTime', audio.currentTime);
+        });
+
+        // 监听 storage 事件，当设置页面更新音量或静音状态时同步更新
+        window.addEventListener('storage', function () {
+            const volume = localStorage.getItem('musicVolume');
+            if (volume) {
+                audio.volume = parseFloat(volume);
+            }
+            const savedMute = localStorage.getItem('isMuted');
+            if (savedMute) {
+                audio.muted = savedMute === 'true';
+            }
+        });
+
+        // 监听音频播放结束事件，实现循环播放
+        audio.addEventListener('ended', function () {
+            this.currentTime = 0;
+            this.play();
+        });
+    </script>
+</body>
+</html>

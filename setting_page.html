@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .setting-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .setting-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .setting-item label {
+            width: 80px; 
+            margin-right: 10px;
+            text-align: justify; 
+            text-align-last: justify; 
+            overflow: hidden; 
+        }
+        /* 关闭按钮样式 */
+        #close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: black; /* 设置符号颜色为黑色 */
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: transparent; /* 非悬停时背景色为透明 */
+            font-size: 20px; /* 可根据需要调整符号大小 */
+        }
+        /* 鼠标悬停时的样式 */
+        #close-button:hover {
+            background-color: #ff0000; /* 悬停时背景色变为红色 */
+            color: white; /* 悬停时符号颜色变为白色，增强对比 */
+        }
+        /* 修改样式，让静音 label 右端对齐，并设置左边距 */
+        .setting-item .mute-label {
+            width: auto;
+            margin-right: 0;
+            margin-left: 2em; /* 新增属性，设置左边距为 2 个汉字宽度 */
+            text-align: right;
+            text-align-last: right;
+        }
+        .setting-item input[type="range"] {
+            flex: 1; 
+            margin-right: 10px;
+        }
+        .setting-item input[type="checkbox"] {
+            margin-right: 0;
+        }
+        /* 新增样式，让保存设置按钮居中 */
+        button[onclick="saveVolume()"] {
+            display: block;
+            margin: 20px auto; /* 上下间距 20px，左右自动居中 */
+        }
+
+        /* 退出游戏按钮样式 */
+        #exit-game-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
+    <audio id="backgroundMusic" src="市集.mp3" preload="auto"></audio>
+</head>
+<body>
+    <h1>设置页面</h1>
+    <!-- 新增关闭按钮 -->
+    <button id="close-button" onclick="goBackToHome()">×</button>
+    <div class="setting-container">
+        <div class="setting-item">
+            <label for="music-volume">音量</label>
+            <input type="range" id="music-volume" min="0" max="100" step="1" value="100">
+            <label for="mute-checkbox" class="mute-label">静音</label>
+            <input type="checkbox" id="mute-checkbox">
+        </div>
+        <div class="setting-item">
+            <label for="sound-effect-volume">音效</label>
+            <input type="range" id="sound-effect-volume" min="0" max="100" step="1" value="100">
+            <label for="sound-effect-mute-checkbox" class="mute-label">静音</label>
+            <input type="checkbox" id="sound-effect-mute-checkbox">
+        </div>
+        <div class="setting-item">
+            <label for="character-dialogue-volume">人物台词</label>
+            <input type="range" id="character-dialogue-volume" min="0" max="100" step="1" value="100">
+            <label for="character-dialogue-mute-checkbox" class="mute-label">静音</label>
+            <input type="checkbox" id="character-dialogue-mute-checkbox">
+        </div>
+        <div class="setting-item">
+            <label for="vibration-checkbox">震动</label>
+            <input type="checkbox" id="vibration-checkbox">
+        </div>
+    </div>
+    <button onclick="saveVolume()">保存设置</button>
+    <!-- 新增退出游戏按钮 -->
+    <button id="exit-game-button" onclick="confirmExitGame()">退出游戏</button>
+
+    <script>
+        // 关闭按钮点击事件
+        function goBackToHome() {
+            // 跳转到 home.html 页面
+            window.location.href = 'home.html';
+        }
+
+        // 音乐
+        const audio = document.getElementById('backgroundMusic');
+        const volumeInput = document.getElementById('music-volume');
+        const muteCheckbox = document.getElementById('mute-checkbox');
+        const soundEffectVolumeInput = document.getElementById('sound-effect-volume');
+        const soundEffectMuteCheckbox = document.getElementById('sound-effect-mute-checkbox');
+        const characterDialogueVolumeInput = document.getElementById('character-dialogue-volume');
+        const characterDialogueMuteCheckbox = document.getElementById('character-dialogue-mute-checkbox');
+        const vibrationCheckbox = document.getElementById('vibration-checkbox');
+
+        // 页面加载时恢复音频状态和音量进度条的值
+        const savedTime = localStorage.getItem('audioPlayTime');
+        if (savedTime) {
+            audio.currentTime = parseFloat(savedTime);
+        }
+
+        const savedVolume = localStorage.getItem('musicVolume');
+        if (savedVolume) {
+            audio.volume = parseFloat(savedVolume);
+            volumeInput.value = parseFloat(savedVolume) * 100; // 恢复进度条的值
+        }
+
+        // 恢复静音状态
+        const savedMute = localStorage.getItem('isMuted');
+        if (savedMute) {
+            audio.muted = savedMute === 'true';
+            muteCheckbox.checked = savedMute === 'true';
+        }
+
+        // 恢复音效音量和静音状态
+        const savedSoundEffectVolume = localStorage.getItem('soundEffectVolume');
+        if (savedSoundEffectVolume) {
+            soundEffectVolumeInput.value = parseFloat(savedSoundEffectVolume) * 100;
+        }
+        const savedSoundEffectMute = localStorage.getItem('isSoundEffectMuted');
+        if (savedSoundEffectMute) {
+            soundEffectMuteCheckbox.checked = savedSoundEffectMute === 'true';
+        }
+
+        // 恢复人物台词音量和静音状态
+        const savedCharacterDialogueVolume = localStorage.getItem('characterDialogueVolume');
+        if (savedCharacterDialogueVolume) {
+            characterDialogueVolumeInput.value = parseFloat(savedCharacterDialogueVolume) * 100;
+        }
+        const savedCharacterDialogueMute = localStorage.getItem('isCharacterDialogueMuted');
+        if (savedCharacterDialogueMute) {
+            characterDialogueMuteCheckbox.checked = savedCharacterDialogueMute === 'true';
+        }
+
+        // 恢复震动状态
+        const savedVibration = localStorage.getItem('isVibrationOn');
+        if (savedVibration) {
+            vibrationCheckbox.checked = savedVibration === 'true';
+            if (vibrationCheckbox.checked && 'vibrate' in navigator) {
+                navigator.vibrate([100]); // 简单测试震动
+            }
+        }
+
+        // 等待用户点击页面后播放音频
+        document.addEventListener('click', function playAudioOnce() {
+            audio.play().catch(() => {
+                console.log('音频播放被阻止，请检查浏览器设置或再次交互');
+            });
+            // 移除事件监听器，避免多次触发
+            document.removeEventListener('click', playAudioOnce);
+        });
+
+        // 页面卸载时保存音频状态
+        window.addEventListener('beforeunload', function () {
+            localStorage.setItem('audioPlayTime', audio.currentTime);
+            localStorage.setItem('isMuted', audio.muted);
+            localStorage.setItem('soundEffectVolume', soundEffectVolumeInput.value / 100);
+            localStorage.setItem('isSoundEffectMuted', soundEffectMuteCheckbox.checked);
+            localStorage.setItem('characterDialogueVolume', characterDialogueVolumeInput.value / 100);
+            localStorage.setItem('isCharacterDialogueMuted', characterDialogueMuteCheckbox.checked);
+            localStorage.setItem('isVibrationOn', vibrationCheckbox.checked);
+        });
+
+        // 音量控制
+        volumeInput.addEventListener('input', function () {
+            const volume = this.value / 100;
+            localStorage.setItem('musicVolume', volume);
+            audio.volume = volume;
+            // 通知所有页面更新音量
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 静音控制
+        muteCheckbox.addEventListener('change', function () {
+            audio.muted = this.checked;
+            // 保存静音状态/////////////////////////////
+            const isMuted = this.checked;
+            localStorage.setItem('isMuted', this.checked);
+            // 通知所有页面更新静音状态
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 音效音量控制
+        soundEffectVolumeInput.addEventListener('input', function () {
+            const volume = this.value / 100;
+            // 这里需要根据实际音效元素设置音量
+            // 示例：假设存在音效元素 const soundEffect = document.getElementById('soundEffect');
+            // soundEffect.volume = volume;
+            localStorage.setItem('soundEffectVolume', volume);
+            // 通知所有页面更新音效音量
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 音效静音控制
+        soundEffectMuteCheckbox.addEventListener('change', function () {
+            // 这里需要根据实际音效元素设置静音
+            // 示例：假设存在音效元素 const soundEffect = document.getElementById('soundEffect');
+            // soundEffect.muted = this.checked;
+            localStorage.setItem('isSoundEffectMuted', this.checked);
+            // 通知所有页面更新音效静音状态
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 人物台词音量控制
+        characterDialogueVolumeInput.addEventListener('input', function () {
+            const volume = this.value / 100;
+            // 这里需要根据实际人物台词音频元素设置音量
+            // 示例：假设存在人物台词音频元素 const characterDialogueAudio = document.getElementById('characterDialogueAudio');
+            // characterDialogueAudio.volume = volume;
+            localStorage.setItem('characterDialogueVolume', volume);
+            // 通知所有页面更新人物台词音量
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 人物台词静音控制
+        characterDialogueMuteCheckbox.addEventListener('change', function () {
+            // 这里需要根据实际人物台词音频元素设置静音
+            // 示例：假设存在人物台词音频元素 const characterDialogueAudio = document.getElementById('characterDialogueAudio');
+            // characterDialogueAudio.muted = this.checked;
+            localStorage.setItem('isCharacterDialogueMuted', this.checked);
+            // 通知所有页面更新人物台词静音状态
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 震动控制
+        vibrationCheckbox.addEventListener('change', function () {
+            if (this.checked && 'vibrate' in navigator) {
+                navigator.vibrate([100]); // 开启震动
+            } else if ('vibrate' in navigator) {
+                navigator.vibrate(0); // 关闭震动
+            }
+            localStorage.setItem('isVibrationOn', this.checked);
+            // 通知所有页面更新震动状态
+            window.dispatchEvent(new Event('storage'));
+        });
+
+        // 监听音频播放结束事件，实现循环播放
+        audio.addEventListener('ended', function () {
+            this.currentTime = 0;
+            this.play();
+        });
+        // 保存音量设置
+        function saveVolume() {
+            const volume = document.getElementById('volume').value;
+            localStorage.setItem('musicVolume', volume);
+        }
+
+        // 确认退出游戏的函数
+        function confirmExitGame() {
+            if (confirm('您是否要退出游戏')) {
+                // 这里可以添加真正退出游戏的逻辑，例如关闭窗口等
+                window.close();
+            }
+        }
+    </script>
+</body>
+</html>
